@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight, BarChart, RefreshCcw, ShoppingBag, Users } from "lucide-react"
@@ -87,7 +88,7 @@ export function LandingPage() {
               <div className="flex flex-col items-center text-center">
                 <div className="rounded-full bg-primary text-primary-foreground p-3 mb-4">1</div>
                 <h3 className="text-xl font-bold mb-2">List Your Items</h3>
-                <p>Add the groceries or supplies you're willing to trade.</p>
+                <p>Add the groceries or supplies you&apos;re willing to trade.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <div className="rounded-full bg-primary text-primary-foreground p-3 mb-4">2</div>
@@ -116,8 +117,8 @@ export function LandingPage() {
                     height={100}
                   />
                   <p className="mb-2">
-                    "UniTrade has been a game-changer! I've saved so much money on groceries and made new friends in the
-                    process."
+                    &quot;UniTrade has been a game-changer! I&apos;ve saved so much money on groceries and made new friends in the
+                    process.&quot;
                   </p>
                   <p className="font-bold">- Sarah, Junior</p>
                 </CardContent>
@@ -132,7 +133,7 @@ export function LandingPage() {
                     height={100}
                   />
                   <p className="mb-2">
-                    "I love how easy it is to find what I need. UniTrade has made campus life so much more convenient!"
+                    &quot;I love how easy it is to find what I need. UniTrade has made campus life so much more convenient!&quot;
                   </p>
                   <p className="font-bold">- Mike, Sophomore</p>
                 </CardContent>

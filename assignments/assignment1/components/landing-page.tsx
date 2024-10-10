@@ -8,10 +8,10 @@ import './landing-page.css'; // Import the CSS file
 
 export function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 h-14 flex items-center">
+    <div className="flex flex-col min-h-screen bg-black text-white">
+      <header className="px-4 lg:px-6 h-14 flex items-center bg-gray-900">
         <Link className="flex items-center justify-center" href="#">
-          <ShoppingBag className="h-6 w-6" />
+          <ShoppingBag className="h-6 w-6 text-white" />
           <span className="ml-2 text-2xl font-bold">UniTrade</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
@@ -34,7 +34,7 @@ export function LandingPage() {
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none animated-title">
                   Trade Groceries & Supplies with Fellow Students
                 </h1>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400 text-center">
+                <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl text-center">
                   UniTrade connects you with other students to exchange what you need. Save money, reduce waste, and
                   build community.
                 </p>
@@ -48,35 +48,35 @@ export function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-800">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Key Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card>
+              <Card className="bg-gray-700">
                 <CardHeader>
                   <CardTitle>Easy Trading</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <RefreshCcw className="h-12 w-12 mb-4" />
-                  <p>Quickly find and trade items with other students on your campus.</p>
+                  <RefreshCcw className="h-12 w-12 mb-4 text-white" />
+                  <p className="text-gray-300">Quickly find and trade items with other students on your campus.</p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="bg-gray-700">
                 <CardHeader>
                   <CardTitle>Save Money</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <BarChart className="h-12 w-12 mb-4" />
-                  <p>Reduce your expenses by trading instead of buying new items.</p>
+                  <BarChart className="h-12 w-12 mb-4 text-white" />
+                  <p className="text-gray-300">Reduce your expenses by trading instead of buying new items.</p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="bg-gray-700">
                 <CardHeader>
                   <CardTitle>Build Community</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Users className="h-12 w-12 mb-4" />
-                  <p>Connect with fellow students and create a supportive network.</p>
+                  <Users className="h-12 w-12 mb-4 text-white" />
+                  <p className="text-gray-300">Connect with fellow students and create a supportive network.</p>
                 </CardContent>
               </Card>
             </div>
@@ -89,26 +89,26 @@ export function LandingPage() {
               <div className="flex flex-col items-center text-center">
                 <div className="rounded-full bg-primary text-primary-foreground p-3 mb-4">1</div>
                 <h3 className="text-xl font-bold mb-2">List Your Items</h3>
-                <p>Add the groceries or supplies you&apos;re willing to trade.</p>
+                <p className="text-gray-300">Add the groceries or supplies you&apos;re willing to trade.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <div className="rounded-full bg-primary text-primary-foreground p-3 mb-4">2</div>
                 <h3 className="text-xl font-bold mb-2">Find What You Need</h3>
-                <p>Browse listings from other students on your campus.</p>
+                <p className="text-gray-300">Browse listings from other students on your campus.</p>
               </div>
               <div className="flex flex-col items-center text-center">
                 <div className="rounded-full bg-primary text-primary-foreground p-3 mb-4">3</div>
                 <h3 className="text-xl font-bold mb-2">Make the Trade</h3>
-                <p>Connect and exchange items with fellow students.</p>
+                <p className="text-gray-300">Connect and exchange items with fellow students.</p>
               </div>
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-800">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">What Students Say</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card>
+              <Card className="bg-gray-700">
                 <CardContent className="flex flex-col items-center text-center p-6">
                   <img
                     src="/placeholder.svg?height=100&width=100"
@@ -117,14 +117,14 @@ export function LandingPage() {
                     width={100}
                     height={100}
                   />
-                  <p className="mb-2">
+                  <p className="mb-2 text-gray-300">
                     &quot;UniTrade has been a game-changer! I&apos;ve saved so much money on groceries and made new friends in the
                     process.&quot;
                   </p>
                   <p className="font-bold">- Sarah, Junior</p>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="bg-gray-700">
                 <CardContent className="flex flex-col items-center text-center p-6">
                   <img
                     src="/placeholder.svg?height=100&width=100"
@@ -133,7 +133,7 @@ export function LandingPage() {
                     width={100}
                     height={100}
                   />
-                  <p className="mb-2">
+                  <p className="mb-2 text-gray-300">
                     &quot;I love how easy it is to find what I need. UniTrade has made campus life so much more convenient!&quot;
                   </p>
                   <p className="font-bold">- Mike, Sophomore</p>
@@ -149,7 +149,7 @@ export function LandingPage() {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center">
                   Ready to Start Trading?
                 </h2>
-                <p className="mx-auto max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400 text-center">
+                <p className="mx-auto max-w-[600px] text-gray-300 md:text-xl text-center">
                   Join UniTrade today and start exchanging groceries and supplies with fellow students on your campus.
                 </p>
               </div>
@@ -163,8 +163,8 @@ export function LandingPage() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs text-gray-500 dark:text-gray-400">© 2023 UniTrade. All rights reserved.</p>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-gray-600">
+        <p className="text-xs text-gray-500">© 2023 UniTrade. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link className="text-xs hover:underline underline-offset-4" href="#">
             Terms of Service

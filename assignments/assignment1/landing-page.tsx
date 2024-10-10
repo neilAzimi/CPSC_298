@@ -1,5 +1,11 @@
-.menu-header:hover {
-  background-color: #ccc;
-  cursor: pointer;
-  transform: scale(1.1); /* Grow the item by 10% */
-}
+import './landing-page.css';
+
+const LandingPage = () => {
+  return (
+    <div className="menu-header">
+      {/* Menu items go here */}
+    </div>
+  );
+};
+
+export default LandingPage;

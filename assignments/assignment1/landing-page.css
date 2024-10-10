@@ -6,6 +6,11 @@
 
 .title {
   animation: fadeIn 2s ease-in-out;
+  transition: transform 0.3s; /* Add transition for smooth effect */
+}
+
+.title:hover {
+  transform: scale(1.1); /* Grow the title by 10% on hover */
 }
 
 @keyframes fadeIn {

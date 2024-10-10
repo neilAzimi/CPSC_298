@@ -13,6 +13,20 @@
   transform: scale(1.1); /* Grow the title by 10% on hover */
 }
 
+.menu-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  padding: 10px;
+  transition: transform 0.3s; /* Add transition for smooth effect */
+}
+
+.menu-item:hover {
+  transform: scale(1.05); /* Grow the menu item slightly on hover */
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

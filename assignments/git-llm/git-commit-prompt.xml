@@ -1,0 +1,7 @@
+<prompt>
+  <command>Create an automated git commit message</command>
+  <context>
+    Use LLM to summarize code changes and generate a meaningful git commit message.
+  </context>
+</prompt>
+

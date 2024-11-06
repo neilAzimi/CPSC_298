@@ -1,9 +1,7 @@
 
 # agents/agent2.py
 
-import sys
-import json
-import logging
+from flask import Flask, request, jsonify
 
 logging.basicConfig(level=logging.INFO)
 
@@ -29,15 +27,20 @@ def calculate(operation, a, b):
         logging.error("Invalid numbers provided.")
         return {'error': 'Invalid numbers provided.'}
 
-if __name__ == '__main__':
-    input_data = json.loads(sys.stdin.read())
+app = Flask(__name__)
+
+@app.route('/calculate', methods=['POST'])
+def calculate_route():
+    input_data = request.get_json()
     op = input_data.get('operation')
     num1 = input_data.get('a')
     num2 = input_data.get('b')
     if not op or num1 is None or num2 is None:
         logging.error("Operation and two numbers must be provided.")
-        print(json.dumps({'error': 'Operation and two numbers must be provided.'}))
-        sys.exit(1)
+        return jsonify({'error': 'Operation and two numbers must be provided.'}), 400
 
     calculation_result = calculate(op, num1, num2)
-    print(json.dumps(calculation_result))
+    return jsonify(calculation_result)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

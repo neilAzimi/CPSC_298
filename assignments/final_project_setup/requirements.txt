@@ -1,7 +1,13 @@
 # Python packages required for the project
 requests
 logging
-json
 n8n
 docker
 psycopg2-binary  # For PostgreSQL, if used
+openai  # For LLM integration
+huggingface_hub  # For Hugging Face models
+flask  # For creating microservices
+gunicorn  # For deploying Flask apps
+kubernetes  # For container orchestration
+prometheus_client  # For monitoring
+grafana_api  # For monitoring

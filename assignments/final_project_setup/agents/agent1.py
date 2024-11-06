@@ -6,14 +6,21 @@ import sys
 import logging
 import json
 import os
+from flask import Flask, request, jsonify
 from config.settings import OPENWEATHERMAP_API_KEY
 
-# Add the project root to the Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
 
 logging.basicConfig(level=logging.INFO)
 
-def get_weather(city_name):
+@app.route('/weather', methods=['POST'])
+def get_weather():
+    input_data = request.get_json()
+    city_name = input_data.get('city_name')
+    if not city_name:
+        logging.error("City name not provided.")
+        return jsonify({'error': 'City name not provided.'}), 400
     base_url = 'https://api.openweathermap.org/data/2.5/weather'
 
     params = {
@@ -42,12 +49,4 @@ def get_weather(city_name):
         return {'error': 'An error occurred while fetching weather data.'}
 
 if __name__ == '__main__':
-    input_data = json.loads(sys.stdin.read())
-    city = input_data.get('city_name')
-    if not city:
-        logging.error("City name not provided.")
-        print(json.dumps({'error': 'City name not provided.'}))
-        sys.exit(1)
-
-    weather_info = get_weather(city)
-    print(json.dumps(weather_info))
+    app.run(host='0.0.0.0', port=5000)

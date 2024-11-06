@@ -18,6 +18,7 @@ Function: Execute specialized tasks such as data processing, API calls, computat
 Implementation:
 Develop in Python for consistency and ease of integration.
 Each agent is containerized using Docker to ensure scalability and ease of deployment.
+Agent 1 is implemented as a Flask application, providing a RESTful API for fetching weather data.
 Agent 2 is implemented as a Flask application, providing a RESTful API for performing calculations.
 3.3. n8n Workflows
 Function: Orchestrate the flow between LLMs and agents, manage task delegation, and handle data routing.

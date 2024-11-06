@@ -1,0 +1,7 @@
+# Python packages required for the project
+requests
+logging
+json
+n8n
+docker
+psycopg2-binary  # For PostgreSQL, if used

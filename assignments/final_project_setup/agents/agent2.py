@@ -1,6 +1,7 @@
 
 # agents/agent2.py
 
+import logging
 from flask import Flask, request, jsonify
 
 logging.basicConfig(level=logging.INFO)

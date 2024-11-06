@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "none",
+        "url": "https://api.example.com/data",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    }
+  ],
+  "connections": {}
+}

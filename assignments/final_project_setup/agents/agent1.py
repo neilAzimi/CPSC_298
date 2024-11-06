@@ -2,6 +2,7 @@
 # agents/agent1.py
 
 import requests
+import sys
 import logging
 import json
 from config.settings import OPENWEATHERMAP_API_KEY

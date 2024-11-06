@@ -2,16 +2,12 @@
 # agents/agent1.py
 
 import requests
-import sys
 import logging
-import json
 import os
 from flask import Flask, request, jsonify
 from config.settings import OPENWEATHERMAP_API_KEY
 
 app = Flask(__name__)
-logging.basicConfig(level=logging.INFO)
-
 logging.basicConfig(level=logging.INFO)
 
 @app.route('/weather', methods=['POST'])
@@ -21,8 +17,8 @@ def get_weather():
     if not city_name:
         logging.error("City name not provided.")
         return jsonify({'error': 'City name not provided.'}), 400
-    base_url = 'https://api.openweathermap.org/data/2.5/weather'
 
+    base_url = 'https://api.openweathermap.org/data/2.5/weather'
     params = {
         'q': city_name,
         'appid': OPENWEATHERMAP_API_KEY,
@@ -39,14 +35,14 @@ def get_weather():
                 'weather': data['weather'][0]['description']
             }
             logging.info(f"Weather data retrieved: {result}")
-            return result
+            return jsonify(result)
         else:
             error_message = data.get('message', 'Error fetching weather data.')
             logging.error(f"Error: {error_message}")
-            return {'error': error_message}
+            return jsonify({'error': error_message}), response.status_code
     except Exception as e:
         logging.error(f"Exception occurred: {str(e)}")
-        return {'error': 'An error occurred while fetching weather data.'}
+        return jsonify({'error': 'An error occurred while fetching weather data.'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -18,6 +18,7 @@ Function: Execute specialized tasks such as data processing, API calls, computat
 Implementation:
 Develop in Python for consistency and ease of integration.
 Each agent is containerized using Docker to ensure scalability and ease of deployment.
+Agent 2 is implemented as a Flask application, providing a RESTful API for performing calculations.
 3.3. n8n Workflows
 Function: Orchestrate the flow between LLMs and agents, manage task delegation, and handle data routing.
 Implementation:
@@ -27,6 +28,7 @@ Set up error handling and logging within workflows.
 3.4. Notify a Discord when the agents interact using provided API key in the `.env` file 
 Each agent should send a notification on the completion of interaction for training
 The final output will also be sent to this channel
+Agent 2 sends a notification to a Discord channel upon completing a calculation, using a webhook URL specified in the environment variables.
 4. Data Flow and Interaction
 Input Reception: The system receives input data or a user query.
 LLM Processing: The LLM analyzes the input and decides on the necessary actions.

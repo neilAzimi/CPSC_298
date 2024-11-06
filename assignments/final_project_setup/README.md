@@ -24,6 +24,9 @@ Implementation:
 Design visual workflows to define interaction logic.
 Implement conditional logic to trigger agents based on LLM outputs.
 Set up error handling and logging within workflows.
+3.4. Notify a Discord when the agents interact using provided API key in the `.env` file 
+Each agent should send a notification on the completion of interaction for training
+The final output will also be sent to this channel
 4. Data Flow and Interaction
 Input Reception: The system receives input data or a user query.
 LLM Processing: The LLM analyzes the input and decides on the necessary actions.

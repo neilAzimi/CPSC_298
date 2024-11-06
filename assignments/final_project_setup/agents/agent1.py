@@ -5,7 +5,11 @@ import requests
 import sys
 import logging
 import json
+import os
 from config.settings import OPENWEATHERMAP_API_KEY
+
+# Add the project root to the Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logging.basicConfig(level=logging.INFO)
 

@@ -17,7 +17,7 @@ Ensure secure and efficient communication with n8n.
 Function: Execute specialized tasks such as data processing, API calls, computations, or interactions with external systems.
 Implementation:
 Develop in Python for consistency and ease of integration.
-Each agent runs as a microservice or container for scalability.
+Each agent is containerized using Docker to ensure scalability and ease of deployment.
 3.3. n8n Workflows
 Function: Orchestrate the flow between LLMs and agents, manage task delegation, and handle data routing.
 Implementation:
@@ -42,7 +42,7 @@ Containerization: Docker for deploying agents and services.
 Database: Optional, for storing state, logs, or intermediate data (e.g., PostgreSQL).
 APIs: RESTful APIs for communication between components.
 6. Implementation Plan
-Phase 1: Environment Setup
+Phase 1: Environment Setup and Docker Configuration
 Set Up n8n:
 Install n8n on a server or cloud platform.
 Configure access control and security settings.
@@ -50,7 +50,9 @@ Configure LLM Access:
 Set up API keys and authentication for the chosen LLM service.
 Establish Development Environment:
 Set up version control (e.g., GitHub).
-Prepare Docker configurations for agents.
+Prepare Docker configurations for agents:
+- Create a Dockerfile for each agent.
+- Ensure each Dockerfile specifies the necessary dependencies and entry points.
 Phase 2: Agent Development
 Design Agent Interfaces:
 Define input and output schemas for agent communication.
@@ -76,7 +78,9 @@ System Testing:
 Perform comprehensive testing with real data inputs.
 Iterate on workflows based on testing feedback.
 Phase 5: Deployment and Scaling
-Deploy Services:
+Deploy Services using Docker:
+- Build Docker images for each agent using `docker build`.
+- Run containers using `docker run` to deploy agents as microservices.
 Use container orchestration (e.g., Kubernetes) for scalability.
 Monitoring and Logging:
 Set up monitoring tools (e.g., Prometheus, Grafana).

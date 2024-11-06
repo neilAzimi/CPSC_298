@@ -8,6 +8,7 @@
     * [IBM Open Source Models](https://youtu.be/PoA3VG6EneQ?si=63faUZYBzBXwwa5_)
     * [Largest Open Source Models to Date](https://github.com/Tencent/Tencent-Hunyuan-Large)
     * [The Elegant Math Behind Machine Learning](https://youtu.be/URtF_UHYBSo?si=UeAWdCcO1DBnJYFH)
+    * [Open Source AI Def](https://opensource.org/ai)
 - Reminder: Have Open AI key for remainder of semester; if CSV is not updated and do not see PRs; I review the [#continuous integration channel on Discord](https://discord.com/channels/1204850325748457543/1204856923149697045)
 - Final Project Update: n8n agent not being offered for us yet; Still go ahead and sign up
 - Remember to `git pull upstream master && git push`

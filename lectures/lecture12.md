@@ -61,6 +61,7 @@
 
 ## Groups to setup Agentic Framework
 - Group Break-Out
+    * Choose a repo lead (ideally with Docker experience)
     * Software Architecture Diagram
     * Abstraction Levels: Top-Level Architecture, Project Organization, Modules, Front-End/Back-End, Functional Decomposition
     * Development Environment

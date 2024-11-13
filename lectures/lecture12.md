@@ -13,6 +13,8 @@
 - Remember to `git pull upstream master && git push`
 - Remember to: `uv run pip install --upgrade aider-chat`
 - Office Hours today; Have not had chance to reply on Discord
+- Quiz this week; 20 minutes - 20 questions
+- In lieu of homework, will do break-outs today
 
 ## Where Everyone Should Be Revisited:
 - Discord Notifications with Webhook (DM me if you need the hook; Look in Discord help channel for Webhooks)

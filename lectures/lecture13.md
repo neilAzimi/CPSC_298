@@ -2,6 +2,7 @@
 
 ## Housekeeping
 - Week in World of AI
+    * (Sam Altman Interview)[https://podcasts.apple.com/us/podcast/y-combinator-startup-podcast/id1236907421?i=1000677329080]
     * (Open AI Agents)[https://youtu.be/ExyUcMVztrA?si=95eCTSodGDmb0I33]
     * (Qwen)[https://youtu.be/y6Wh4SpRoao?si=xp1NuP54xUGg4pyU]
     * (Test Time Training (TTT)[https://youtu.be/vei7uf9wOxI?si=XpH17iw6XZx8NrI4]

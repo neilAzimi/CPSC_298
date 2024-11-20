@@ -2,10 +2,10 @@
 
 ## Housekeeping
 - Week in World of AI
-    * (Sam Altman Interview)[https://podcasts.apple.com/us/podcast/y-combinator-startup-podcast/id1236907421?i=1000677329080]
-    * (Open AI Agents)[https://youtu.be/ExyUcMVztrA?si=95eCTSodGDmb0I33]
-    * (Qwen)[https://youtu.be/y6Wh4SpRoao?si=xp1NuP54xUGg4pyU]
-    * (Test Time Training (TTT)[https://youtu.be/vei7uf9wOxI?si=XpH17iw6XZx8NrI4]
+    * [Sam Altman Interview](https://podcasts.apple.com/us/podcast/y-combinator-startup-podcast/id1236907421?i=1000677329080)
+    * [Open AI Agents](https://youtu.be/ExyUcMVztrA?si=95eCTSodGDmb0I33)
+    * [Qwen](https://youtu.be/y6Wh4SpRoao?si=xp1NuP54xUGg4pyU)
+    * [Test Time Training (TTT)](https://youtu.be/vei7uf9wOxI?si=XpH17iw6XZx8NrI4)
     * [More Details on Truth Terminal](https://youtu.be/rsKZX1GiIf8?si=tQhtnm4P2CfS1HYn)
     * [Dialogue Engineering and Management](https://youtu.be/FhDj_-QTIEE?si=yO2f_ABBq5tn2r9u)
     * [AI Safety and Alignment](https://youtu.be/xjH2B_sE_RQ?si=KY7Op_qMs7RW9pgG)

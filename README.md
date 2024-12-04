@@ -28,3 +28,5 @@
 [Lecture 12](./lectures/lecture12.md)
 
 [Lecture 13](./lectures/lecture13.md)
+
+[Lecture/Review 14](./lectures/lecture14.md)

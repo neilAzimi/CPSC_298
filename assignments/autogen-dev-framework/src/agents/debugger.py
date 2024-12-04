@@ -1,7 +1,6 @@
 import asyncio
+from autogen.agentchat import AssistantAgent
 from typing import Dict, List, Optional, Any
-from autogen import AssistantAgent, GroupChat, GroupChatManager
-from autogen_ext.models import OpenAIChatCompletionClient
 import logging
 from src.config import Config
 from src.monitor import measure_time
@@ -15,7 +14,6 @@ class DebuggingAgent(AssistantAgent):
         self,
         name: str = "debugging_agent",
         llm_config: Optional[Dict[str, Any]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
         **kwargs
     ):
         """
@@ -24,7 +22,6 @@ class DebuggingAgent(AssistantAgent):
         Args:
             name: Agent identifier
             llm_config: Language model configuration
-            tools: List of available tools for the agent
             **kwargs: Additional configuration options
         """
         system_message = """
@@ -45,33 +42,16 @@ class DebuggingAgent(AssistantAgent):
         Use TERMINATE when debugging is complete.
         """
         
-        # Default debugging tools
-        default_tools = [{
-            "name": "analyze_error",
-            "description": "Analyzes error messages and stack traces",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "error_type": {"type": "string"},
-                    "location": {"type": "string"},
-                    "suggested_fixes": {"type": "array"}
-                }
-            }
-        }]
-        
-        # Merge provided tools with defaults
-        all_tools = (tools or []) + default_tools
-        
         llm_config = llm_config or Config.get_agent_config("debugger")
         
         super().__init__(
             name=name,
             system_message=system_message,
             llm_config=llm_config,
-            tools=all_tools,
             **kwargs
         )
 
+    @measure_time
     async def analyze_error(
         self,
         error_message: str,
@@ -111,11 +91,8 @@ class DebuggingAgent(AssistantAgent):
             
             return {
                 'success': True,
-                'analysis': response.content,
-                'metadata': {
-                    'suggestions': response.suggested_actions,
-                    'key_points': response.key_points
-                }
+                'analysis': response,
+                'metadata': {}
             }
             
         except Exception as e:
@@ -126,6 +103,7 @@ class DebuggingAgent(AssistantAgent):
                 'metadata': {}
             }
 
+    @measure_time
     async def suggest_fixes(
         self,
         code: str,
@@ -149,8 +127,10 @@ class DebuggingAgent(AssistantAgent):
                 "content": f"""
                 Review and suggest fixes for the following code:
                 
-                Code:                ```
-                {code}                ```
+                Code:
+                ```
+                {code}
+                ```
                 
                 Identified Issues:
                 {', '.join(issues)}
@@ -169,11 +149,8 @@ class DebuggingAgent(AssistantAgent):
             
             return {
                 'success': True,
-                'fixes': response.content,
-                'metadata': {
-                    'suggestions': response.suggested_actions,
-                    'key_points': response.key_points
-                }
+                'fixes': response,
+                'metadata': {}
             }
             
         except Exception as e:

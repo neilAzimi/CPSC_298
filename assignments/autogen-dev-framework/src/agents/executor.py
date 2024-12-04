@@ -1,214 +1,161 @@
-from autogen import UserProxyAgent
-from autogen.coding import DockerCommandLineCodeExecutor, LocalCommandLineCodeExecutor
-from typing import Optional, Dict, Any, List
-import tempfile
+import asyncio
+from autogen.agentchat import AssistantAgent
+from typing import Dict, List, Optional, Any
 import logging
-import os
+import subprocess
+from pathlib import Path
 from src.config import Config
 from src.monitor import measure_time
 
 logger = logging.getLogger(__name__)
 
-class ExecutorAgent(UserProxyAgent):
-    """
-    ExecutorAgent is responsible for safely executing code and providing execution results.
-    Inherits from AutoGen's UserProxyAgent for code execution capabilities.
-    """
-
+class ExecutorAgent(AssistantAgent):
+    """An agent specialized in executing and testing code."""
+    
     def __init__(
         self,
         name: str = "executor",
         llm_config: Optional[Dict[str, Any]] = None,
-        use_docker: bool = True,
-        work_dir: Optional[str] = None,
         **kwargs
     ):
         """
-        Initialize the executor agent with proper security and monitoring.
-
+        Initialize the executor agent.
+        
         Args:
             name: Agent identifier
             llm_config: Language model configuration
-            use_docker: Whether to use Docker for code execution
-            work_dir: Working directory for code execution
             **kwargs: Additional configuration options
         """
-        llm_config = llm_config or Config.get_agent_config("executor")
         system_message = """
-        You are responsible for executing and validating code implementations.
+        You are an expert code execution agent that safely runs and tests code.
         
-        Responsibilities:
-        1. Execute provided code safely
-        2. Validate outputs and behavior
-        3. Monitor performance
-        4. Report execution results
+        Your responsibilities:
+        1. Execute code safely
+        2. Capture and report outputs
+        3. Handle execution errors
+        4. Provide execution feedback
         
-        Guidelines:
-        - Ensure safe execution environment
-        - Check for security concerns
-        - Monitor resource usage
-        - Provide detailed execution logs
-        
-        Use TERMINATE when execution is complete.
+        Use TERMINATE when execution is complete or if there are critical errors.
         """
-
-        # Set up working directory
-        self.work_dir = work_dir or tempfile.mkdtemp()
-        os.makedirs(self.work_dir, exist_ok=True)
-
-        # Configure code executor
-        if use_docker:
-            executor = DockerCommandLineCodeExecutor(
-                image="python:3.12-slim",
-                timeout=60,
-                work_dir=self.work_dir,
-                retry_on_timeout=True,
-                resource_limits={
-                    'memory': '512m',
-                    'cpu_count': 1
-                }
-            )
-        else:
-            executor = LocalCommandLineCodeExecutor(
-                timeout=60,
-                work_dir=self.work_dir,
-                retry_on_timeout=True
-            )
-
-        # Configure execution settings
-        code_execution_config = {
-            "executor": executor,
-            "use_docker": use_docker,
-            "last_n_messages": 3,
-            "work_dir": self.work_dir
-        }
-
+        
+        llm_config = llm_config or Config.get_agent_config("executor")
+        
         super().__init__(
             name=name,
             system_message=system_message,
-            human_input_mode="NEVER",
-            code_execution_config=code_execution_config,
             llm_config=llm_config,
             **kwargs
         )
+        
+        # Set up work directory
+        self.work_dir = Path(Config.WORK_DIR)
+        self.work_dir.mkdir(parents=True, exist_ok=True)
 
+    @measure_time
     async def execute_code(
         self,
         code: str,
-        language: str = "python",
-        context: Optional[Dict[str, Any]] = None
+        filename: str,
+        timeout: int = 30
     ) -> Dict[str, Any]:
         """
-        Execute provided code safely and return results.
-
+        Execute Python code and capture the output.
+        
         Args:
-            code: Code to execute
-            language: Programming language of the code
-            context: Additional execution context
-
+            code: The code to execute
+            filename: The name of the file to save the code in
+            timeout: Maximum execution time in seconds
+            
         Returns:
-            Dict containing execution results and metadata
+            Dict containing execution results
         """
         try:
-            # Prepare execution context
-            execution_context = {
-                "code": code,
-                "language": language,
-                **(context or {})
-            }
-
-            # Execute code using AutoGen's native execution
-            result = await self.execute(
-                code,
-                language=language,
-                context=execution_context
+            # Save code to file
+            file_path = self.work_dir / filename
+            with open(file_path, 'w') as f:
+                f.write(code)
+            
+            # Execute the code
+            result = subprocess.run(
+                ['python', str(file_path)],
+                capture_output=True,
+                text=True,
+                timeout=timeout
             )
-
+            
             return {
-                'success': True,
-                'output': result.output,
-                'execution_time': result.execution_time,
-                'metadata': {
-                    'language': language,
-                    'work_dir': self.work_dir,
-                    'resource_usage': result.resource_usage
-                }
+                'success': result.returncode == 0,
+                'output': result.stdout,
+                'error': result.stderr if result.returncode != 0 else None,
+                'file_path': str(file_path)
             }
-
-        except Exception as e:
-            logger.error(f"Code execution failed: {str(e)}", exc_info=True)
+            
+        except subprocess.TimeoutExpired:
             return {
                 'success': False,
-                'error': str(e),
-                'metadata': {
-                    'language': language,
-                    'work_dir': self.work_dir
-                }
+                'error': f'Execution timed out after {timeout} seconds'
+            }
+        except Exception as e:
+            logger.error(f"Error executing code: {str(e)}", exc_info=True)
+            return {
+                'success': False,
+                'error': str(e)
             }
 
+    @measure_time
     async def validate_execution(
         self,
-        code: str,
-        expected_output: Any,
-        test_cases: Optional[List[Dict[str, Any]]] = None
+        execution_result: Dict[str, Any],
+        expected_output: Optional[str] = None
     ) -> Dict[str, Any]:
         """
-        Validate code execution against expected output and test cases.
-
+        Validate the execution results.
+        
         Args:
-            code: Code to validate
-            expected_output: Expected execution result
-            test_cases: Optional list of test cases to run
-
+            execution_result: Results from code execution
+            expected_output: Optional expected output to validate against
+            
         Returns:
             Dict containing validation results
         """
         try:
-            results = []
-
-            # Run main validation
-            main_result = await self.execute_code(code)
-            results.append({
-                'case': 'main',
-                'success': main_result['success'],
-                'matches_expected': main_result.get('output') == expected_output
-            })
-
-            # Run additional test cases
-            if test_cases:
-                for test_case in test_cases:
-                    test_result = await self.execute_code(
-                        code,
-                        context=test_case.get('context')
-                    )
-                    results.append({
-                        'case': test_case.get('name', 'unnamed'),
-                        'success': test_result['success'],
-                        'matches_expected': test_result.get('output') == test_case.get('expected')
-                    })
-
+            messages = [{
+                "role": "user",
+                "content": f"""
+                Validate the following code execution results:
+                
+                Execution Output:
+                {execution_result.get('output', 'No output')}
+                
+                Error Output:
+                {execution_result.get('error', 'No errors')}
+                
+                Expected Output:
+                {expected_output or 'Not specified'}
+                
+                Provide:
+                1. Validation status
+                2. Output analysis
+                3. Recommendations
+                """
+            }]
+            
+            response = await self.generate_reply(messages)
+            
+            validation_passed = (
+                execution_result['success'] and
+                (not expected_output or expected_output in execution_result.get('output', ''))
+            )
+            
             return {
-                'success': all(r['success'] and r['matches_expected'] for r in results),
-                'results': results,
-                'metadata': {
-                    'test_count': len(results),
-                    'pass_count': sum(1 for r in results if r['success'] and r['matches_expected'])
-                }
+                'success': validation_passed,
+                'analysis': response,
+                'matches_expected': validation_passed if expected_output else None
             }
-
+            
         except Exception as e:
-            logger.error(f"Validation failed: {str(e)}", exc_info=True)
+            logger.error(f"Error in validation: {str(e)}", exc_info=True)
             return {
                 'success': False,
-                'error': str(e),
-                'results': [],
-                'metadata': {}
+                'error': str(e)
             }
-
-    def cleanup(self):
-        """Clean up temporary files and resources"""
-        try:
-            import shutil
-            shutil.rmtree(self.work_dir, ignore_errors=True)
-        except Exception as e:
-            logger.error(f"Cleanup failed: {str(e)}", exc_info=True)

@@ -1,4 +1,4 @@
-from autogen import AssistantAgent
+from autogen.agentchat import AssistantAgent
 from typing import Optional, Dict, Any, List
 import logging
 from src.config import Config
@@ -16,7 +16,6 @@ class CoderAgent(AssistantAgent):
         self,
         name: str = "coder",
         llm_config: Optional[Dict[str, Any]] = None,
-        tools: Optional[List[Dict[str, Any]]] = None,
         **kwargs
     ):
         """
@@ -25,7 +24,6 @@ class CoderAgent(AssistantAgent):
         Args:
             name: Agent identifier
             llm_config: Language model configuration
-            tools: List of available tools for the agent
         """
         llm_config = llm_config or Config.get_agent_config("coder")
         
@@ -52,9 +50,10 @@ class CoderAgent(AssistantAgent):
             name=name,
             system_message=system_message,
             llm_config=llm_config,
-            tools=tools or []
+            **kwargs
         )
 
+    @measure_time
     async def execute_coding_task(
         self,
         specifications: str,
@@ -81,11 +80,8 @@ class CoderAgent(AssistantAgent):
             
             return {
                 'success': True,
-                'code': response.content,
-                'metadata': {
-                    'suggestions': response.suggested_actions,
-                    'key_points': response.key_points
-                }
+                'code': response,
+                'metadata': {}
             }
             
         except Exception as e:
@@ -96,6 +92,7 @@ class CoderAgent(AssistantAgent):
                 'metadata': {}
             }
 
+    @measure_time
     async def review_code(
         self,
         code: str,
@@ -115,8 +112,10 @@ class CoderAgent(AssistantAgent):
             review_prompt = f"""
             Review the following code against requirements:
             
-            Code:            ```
-            {code}            ```
+            Code:
+            ```
+            {code}
+            ```
             
             Requirements:
             {requirements}
@@ -137,9 +136,9 @@ class CoderAgent(AssistantAgent):
             
             return {
                 'success': True,
-                'review': response.content,
-                'approved': 'TERMINATE' in response.content,
-                'suggestions': response.suggested_actions
+                'review': response,
+                'approved': 'TERMINATE' in response,
+                'suggestions': []
             }
             
         except Exception as e:

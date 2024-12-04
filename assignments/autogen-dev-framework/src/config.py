@@ -2,6 +2,7 @@ import os
 from typing import Dict, Any, Optional
 from dotenv import load_dotenv
 from pathlib import Path
+import logging
 
 # Load environment variables
 load_dotenv()
@@ -11,47 +12,65 @@ class Config:
     
     # OpenAI Configuration
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4")
-    OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0.2"))
+    OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0.7"))
     
     # System Configuration
     DEBUG_MODE = os.getenv("DEBUG_MODE", "False").lower() == "true"
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+    WORK_DIR = os.getenv("WORK_DIR", "./coding")
     
-    # Agent Configuration
+    # Performance Settings
+    TIMEOUT = int(os.getenv("TIMEOUT", "600"))
+    MAX_RETRIES = int(os.getenv("MAX_RETRIES", "3"))
+    CACHE_SEED = int(os.getenv("CACHE_SEED", "42"))
+    
+    # Default max consecutive auto replies from .env
+    DEFAULT_MAX_AUTO_REPLY = int(os.getenv("MAX_CONSECUTIVE_AUTO_REPLY", "10"))
+    
+    # Agent Configuration with dynamic values from .env
     AGENT_CONFIGS = {
         "planner": {
-            "temperature": 0.2,
-            "max_consecutive_auto_reply": 10
+            "temperature": OPENAI_TEMPERATURE,
+            "max_consecutive_auto_reply": DEFAULT_MAX_AUTO_REPLY,
+            "max_tokens": 16384,  # GPT-4o mini limit
+            "timeout": TIMEOUT
         },
         "coder": {
-            "temperature": 0.1,
-            "max_consecutive_auto_reply": 5
+            "temperature": OPENAI_TEMPERATURE,
+            "max_consecutive_auto_reply": DEFAULT_MAX_AUTO_REPLY // 2,  # Half of default
+            "max_tokens": 16384,
+            "timeout": TIMEOUT
         },
         "debugger": {
-            "temperature": 0.1,
-            "max_consecutive_auto_reply": 3
+            "temperature": OPENAI_TEMPERATURE,
+            "max_consecutive_auto_reply": DEFAULT_MAX_AUTO_REPLY // 3,  # Third of default
+            "max_tokens": 16384,
+            "timeout": TIMEOUT
         },
         "tester": {
-            "temperature": 0.1,
-            "max_consecutive_auto_reply": 5
+            "temperature": OPENAI_TEMPERATURE,
+            "max_consecutive_auto_reply": DEFAULT_MAX_AUTO_REPLY // 2,
+            "max_tokens": 16384,
+            "timeout": TIMEOUT
         },
         "executor": {
-            "temperature": 0.1,
-            "max_consecutive_auto_reply": 3
+            "temperature": OPENAI_TEMPERATURE,
+            "max_consecutive_auto_reply": DEFAULT_MAX_AUTO_REPLY // 3,
+            "max_tokens": 16384,
+            "timeout": TIMEOUT
         }
     }
     
     # LLM Default Configuration
     DEFAULT_LLM_CONFIG = {
-        "timeout": 600,
-        "retry_on_timeout": True,
-        "max_retries": 3,
-        "cache_seed": 42,
+        "request_timeout": 600,
+        "seed": 42,
         "temperature": OPENAI_TEMPERATURE,
         "config_list": [{
             "model": OPENAI_MODEL,
-            "api_key": OPENAI_API_KEY
+            "api_key": OPENAI_API_KEY,
+            "base_url": "https://api.openai.com/v1"
         }]
     }
     
@@ -96,9 +115,22 @@ class Config:
             Dict containing logging configuration
         """
         return {
-            "level": cls.LOG_LEVEL,
-            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            "debug_mode": cls.DEBUG_MODE
+            "level": getattr(logging, cls.LOG_LEVEL.upper()),
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        }
+    
+    @classmethod
+    def get_code_execution_config(cls) -> Dict[str, Any]:
+        """
+        Get code execution configuration.
+        
+        Returns:
+            Dict containing code execution settings
+        """
+        return {
+            "work_dir": cls.WORK_DIR,
+            "use_docker": False,  # Can be made configurable via .env if needed
+            "timeout": cls.TIMEOUT
         }
     
     @classmethod
@@ -117,6 +149,17 @@ class Config:
         for var_name, var_value in required_vars:
             if not var_value:
                 raise ValueError(f"Required configuration {var_name} is missing")
+        
+        # Validate model-specific constraints
+        if cls.OPENAI_MODEL == "gpt-4o-mini":
+            for agent_type, config in cls.AGENT_CONFIGS.items():
+                if config.get("max_tokens", 0) > 16384:
+                    raise ValueError(f"max_tokens for {agent_type} exceeds GPT-4o mini limit of 16384")
+        
+        # Validate work directory
+        work_dir = Path(cls.WORK_DIR)
+        if not work_dir.exists():
+            work_dir.mkdir(parents=True, exist_ok=True)
     
     @classmethod
     def initialize(cls) -> None:
@@ -124,9 +167,14 @@ class Config:
         cls.validate_config()
         
         if cls.DEBUG_MODE:
-            print("Running in DEBUG mode")
-            print(f"Using OpenAI Model: {cls.OPENAI_MODEL}")
+            print("\n=== Configuration Initialized ===")
+            print(f"Model: {cls.OPENAI_MODEL}")
+            print(f"Temperature: {cls.OPENAI_TEMPERATURE}")
+            print(f"Work Directory: {cls.WORK_DIR}")
             print(f"Log Level: {cls.LOG_LEVEL}")
+            print(f"Request Timeout: {cls.DEFAULT_LLM_CONFIG['request_timeout']}s")
+            print(f"Base URL: {cls.DEFAULT_LLM_CONFIG['config_list'][0]['base_url']}")
+            print("===============================\n")
 
 # Initialize configuration when module is imported
 Config.initialize() 

@@ -2,6 +2,7 @@
 
 ## Housekeeping
 - Week in World of AI (Verbally)
+- Final Exam
 
 ## What we Learned this Semester
 - Tool Chains

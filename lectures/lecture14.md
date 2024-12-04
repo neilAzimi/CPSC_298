@@ -4,8 +4,8 @@
 - Week in World of AI (Verbally)
 
 ## What we Learned this Semester
-- Git
 - Tool Chains
+- Git and using it with new tool Chains
 - Basics of Coding Assistance and LLMs
 - LLM architectures and state of the art
 - Pull Requests and Working as Teams
